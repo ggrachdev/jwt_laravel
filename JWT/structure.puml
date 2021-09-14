@@ -1,0 +1,73 @@
+@startuml
+
+left to right direction
+skinparam classAttributeIconSize 0
+
+package JWT {
+
+    namespace Exception {
+
+        class BaseException {
+
+        }
+    }
+
+    namespace Entity {
+
+        class JWT {
+            + constructor(array $header, array $peyload, string $signature, string $token)
+            + getHeader()
+            + getPayload()
+            + getSignature()
+            + getToken()
+        }
+    }
+
+    namespace Encoder {
+
+        namespace Contract {
+            interface EncoderInterface {
+                + decode(string $token): JWT
+                + encode(array $header, array $payload): JWT
+                + getAlgorithmCode(): string
+            }
+        }
+
+        class HS256 implements Encoder.Contract.EncoderInterface {
+            + constructor(string $privateKey)
+        }
+
+        class RS256 implements Encoder.Contract.EncoderInterface {
+            + constructor(string $privateKey, string $publicKey)
+        }
+
+        class Ed25519 implements Encoder.Contract.EncoderInterface {
+            + constructor(string $privateKey)
+        }
+    }
+
+    namespace Validator {
+        class JWTValidator
+        {
+            + {static} isValid(JWT $jwt)
+            + {static} isInvalid(JWT $jwt)
+            + {static} isInvalid(JWT $jwt)
+        }
+    }
+
+    namespace Facade {
+
+        class JWT {
+            + {static} getFromRequest(Request $request)
+            + {static} getUser(JWT $jwtEntity): User
+        }
+    }
+
+    /'
+    Builder.MyClass1 ..>  Builder.MyClass2
+    Builder.MyClass1 ..|>  Builder.MyClass2
+    Builder.MyClass1 --o Builder.MyClass2
+    '/
+}
+
+@enduml
